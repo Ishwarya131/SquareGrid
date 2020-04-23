@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+h1 {
+  color: rgba(143, 138, 138, 0.952);
+  text-align: center;
+  font-style: italic;
+  font-size: 30px;
+}
+body {
+    margin: 0;
+    padding: 0;
+    background: #1f1e1ef5;
+}
+#countdown{
+ text-align: center;
+ font-size: 100px;
+ font-weight: bold;
+ margin: 150px auto;
+ color: chartreuse;
+ width: 400px;
+ height: 330px;
+}
+#times{
+    float: right;
+    color: chartreuse; 
+    position: absolute; 
+    top: 40%;
+
+}
+#container {
+  width: 450px;
+  height: 360px;
+  background: rgb(69, 69, 70);
+  margin-left: -120px;
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(5,90px);
+  grid-template-rows: repeat(4, 90px); 
+}
+#container .box{
+    background-color: rgba(255, 255, 255, 0.8);
+    display: grid;
+    box-sizing: border-box;
+  border: 1px solid black;
+   
+}
+#container .box:hover
+{
+  background: #1f1e1eda;
+  color: rgb(102,121,121);
+}
+#container .box h2
+{
+    margin: 0;
+    padding: 0;
+    justify-self: center;
+    align-self: center;
+    font-family: sans-serif;
+    font-size: 30px;
+    cursor: pointer;
+}
+#container .box:hover h2{
+  font-size: 50px;
+}
+
+
+
+</style>
+</head>
+<body>
+
+<h1>FORTY  SHADES  OF  GRAY</h1>
+
+<div id="countdown">5</div>
+
+<div id="times">
+    <div class="time">
+        <h3>TIME</h3>
+        <p id="timedata">0.000</p>
+    </div>
+    <div class="time">
+        <h3>BEST TIME  </h3>
+        <P id="besttimedata"></P>
+    </div>
+
+</div>
+
+<div id="container">
+    <div class="box"><h2 id="el1">1</h2></div>
+    <div class="box"><h2 id="el2">7</h2></div>
+    <div class="box"><h2 id="el3">13</h2></div>
+    <div class="box"><h2 id="el4">4</h2></div>
+    <div class="box"><h2 id="el5">19</h2></div>
+    <div class="box"><h2 id="el6">8</h2></div>
+    <div class="box"><h2 id="el7">3</h2></div>
+    <div class="box"><h2 id="el8">14</h2></div>
+    <div class="box"><h2 id="el9">5</h2></div>
+    <div class="box"><h2 id="el10">12</h2></div>
+    <div class="box"><h2 id="el11">2</h2></div>
+    <div class="box"><h2 id="el12">18</h2></div>
+    <div class="box"><h2 id="el13">9</h2></div>
+    <div class="box"><h2 id="el14">15</h2></div>
+    <div class="box"><h2 id="el15">6</h2></div>
+    <div class="box"><h2 id="el16">11</h2></div>
+    <div class="box"><h2 id="el17">16</h2></div>
+    <div class="box"><h2 id="el18">10</h2></div>
+    <div class="box"><h2 id="el19">17</h2></div>
+    <div class="box"><h2 id="el20">20</h2></div>
+    
+</div>
+
+<br><button onclick=restart();>restart game</button></br>
+<br> </br>
+
+<button onclick=clearbest();>reset besttime</button>
+
+<script>
+  //to give best time whenever restarted
+  
+  if(localStorage.clickcount){
+	  document.getElementById('besttimedata').innerHTML=localStorage.getItem("bestscores");
+	}
+	else{
+	 document.getElementById('besttimedata').innerHTML="0.000";
+	}
+var bestscores=[]; 	
+var seconds = document.getElementById('countdown').innerHTML;
+const grid=document.getElementById('container');
+grid.style.display='none';
+var countdown = setInterval(function() {
+    seconds--;
+    document.getElementById('countdown').innerHTML = seconds;
+    if (seconds <= 0){
+        grid.style.display='grid';
+        clearInterval(countdown);
+        document.getElementById('countdown').style.display='none'; 
+        startgame();
+    }
+}, 1000);   
+var bleep=new Audio('sound.mp3');
+let initialcounter=21;
+let secondsx=0;
+let milliseconds=0;
+let interval=null;
+
+function stopwatch(){
+    milliseconds+=5;
+    if(milliseconds/1000===1){
+        milliseconds=0;
+        secondsx++;
+    }
+    document.getElementById('timedata').innerHTML=secondsx +":" +milliseconds;
+}
+function startgame(){
+interval=window.setInterval(stopwatch,5);
+}
+function stopgame(){
+
+// to stop game and to set best time
+if (typeof(Storage) !== "undefined") {
+    if (localStorage.clickcount) {
+      localStorage.clickcount = parseFloat(localStorage.clickcount);
+    } else {
+      localStorage.clickcount = 0.000;
+    }
+	 window.clearInterval(interval);
+	var t=parseFloat(secondsx+'.'+milliseconds);
+	localStorage.clickcount=t;
+	
+  var bestscores=[];
+  if(JSON.parse(localStorage.getItem("bestscores"))!=null){
+  bestscores=JSON.parse(localStorage.getItem("bestscores"));
+  }
+  bestscores.push(localStorage.clickcount);
+  bestscores.sort();
+  bestscores=bestscores.splice(0,5);
+  localStorage.setItem("bestscores",JSON.stringify(bestscores));
+  document.getElementById('besttimedata').innerHTML=localStorage.getItem("bestscores");
+}
+   
+}
+function clearbest(){
+  localStorage.clear();
+  document.getElementById('besttimedata').innerHTML=0.000;
+}
+function restart(){
+  location.reload();
+}
+
+  let arr=[];
+for(let i=1;i<=20;i++){
+  arr[i]=document.getElementById('el'+i);
+  arr[i].onclick=( ) =>{changetext(arr[i])}
+}
+
+
+function changetext(element){
+  if(initialcounter-element.innerHTML===20 && initialcounter<=40)
+ { element.innerHTML=initialcounter;
+  initialcounter++;
+  bleep.play();}
+
+else if (initialcounter-element.innerHTML===20 && initialcounter>40) {
+    element.innerHTML=' ';
+    initialcounter++
+    bleep.play();
+}
+ if (initialcounter===61) {
+   stopgame();
+}
+}
+
+
+
+</script>
+</body>
+</html>
